@@ -119,16 +119,23 @@ fn1 <- function(nclusters){
     median()
 }
 
-v <- data.table(clusters = 5:50)
+v <- data.table(clusters = 5:300)
 v2 <- v %>% 
   rowwise() %>% 
   mutate(val = fn1(clusters))
 v2 %>% setDT()
 
-
+n_mvs
 v2 %>% 
   ggplot(aes(clusters, val))+
+  geom_hline(aes(yintercept = n_mvs), lty=3) + 
   geom_point() + 
-  lims(y=c(0, 15))
+  lims(y=c(0, n_mvs)) + 
+  labs(x = "kmeans clusters", 
+       y = "Median NVIS MVS appearances of clusters") +
+  theme_linedraw()
 
-
+ggsave("figures/kmean_kaynini_nvisMVS_westernKI_crossAppearances.png",
+       width = 20, 
+       height = 15, 
+       units='cm')
