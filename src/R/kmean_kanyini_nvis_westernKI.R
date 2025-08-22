@@ -47,7 +47,7 @@ plot(im2[[40]])
 m2 <- terra::ifel(im[[40]] < 0.5, 1, NA)
 plot(m2)
 im2 <- terra::crop(im2, m2, mask=T)
-plot(im2[[40]])
+plot(im2[[50]])
 
 
 ki_west_bbox <- terra::ext(c(xmin = 136.5199, xmax = 137.2, 
@@ -58,6 +58,7 @@ lines(ki_west_bbox, col='red')
 
 im3 <- terra::crop(im2, ki_west_bbox)
 plot(im3[[40]])
+plot(im3[[50]])
 
 
 names(im3) <- paste0("b",1:50)
@@ -101,7 +102,7 @@ tmp_mat <- tmp %>%
   select(starts_with("b")) %>% 
   as.matrix()
 
-j <- kmeans(tmp_mat, 10)
+j <- kmeans(tmp_mat, 22)
 j$cluster
 
 
@@ -109,6 +110,16 @@ table(tmp$mvs, j$cluster) %>% print
 
 table(tmp$mvs, j$cluster) %>% 
   apply(., 2, FUN = function(x) sum(x > 0)) %>% 
+  median()
+
+table(tmp$mvs, j$cluster) %>% 
+  apply(., 2, FUN = function(x){
+    nclust <- nrow(j$centers)
+    nobs <- length(j$cluster)
+
+    threshold <- 1/sum(x)
+    sum(x > (threshold))
+    }) %>% 
   median()
 
 
